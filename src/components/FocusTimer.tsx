@@ -15,7 +15,8 @@ export const FocusTimer = ({ duration, onComplete }: FocusTimerProps) => {
   const { toast } = useToast();
 
   useEffect(() => {
-    let interval: number;
+    let interval: NodeJS.Timeout | undefined;
+    
     if (isRunning && timeLeft > 0) {
       interval = setInterval(() => {
         setTimeLeft((time) => time - 1);
@@ -27,7 +28,9 @@ export const FocusTimer = ({ duration, onComplete }: FocusTimerProps) => {
       });
       onComplete();
     }
-    return () => clearInterval(interval);
+    return () => {
+      if (interval) clearInterval(interval);
+    };
   }, [isRunning, timeLeft, onComplete, toast]);
 
   const toggleTimer = () => setIsRunning(!isRunning);
